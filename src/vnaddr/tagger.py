@@ -1,5 +1,6 @@
 """Address segmenters: a rule-based one (ablation / no-model fallback) and a fine-tuned
 transformer token classifier."""
+import os
 import re
 from pathlib import Path
 
@@ -95,10 +96,11 @@ class RuleTagger:
 class HFTagger:
     """Fine-tuned token classifier (labels on our word tokens, first-subword alignment)."""
 
-    def __init__(self, model_dir: str | Path, device: str = "cpu", quantize: bool = False):
+    def __init__(self, model_dir: str | Path, device: str | None = None, quantize: bool = False):
         import torch
         from transformers import AutoModelForTokenClassification, AutoTokenizer
         self.torch = torch
+        device = device or os.environ.get("VNADDR_DEVICE", "cpu")  # e.g. VNADDR_DEVICE=cuda
         self.tok = AutoTokenizer.from_pretrained(model_dir)
         self.model = AutoModelForTokenClassification.from_pretrained(
             model_dir, torch_dtype=torch.float32).to(device).eval()
