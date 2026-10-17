@@ -1,0 +1,166 @@
+Metadata-Version: 2.4
+Name: vnaddr
+Version: 1.0.0
+Summary: Normalize Vietnamese addresses and convert them to the 2025 administrative system
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: rapidfuzz>=3
+Requires-Dist: fastapi>=0.110
+Requires-Dist: uvicorn[standard]
+Requires-Dist: pydantic>=2
+Provides-Extra: model
+Requires-Dist: torch>=2.2; extra == "model"
+Requires-Dist: transformers<5,>=4.40; extra == "model"
+Requires-Dist: numpy<2; extra == "model"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: httpx; extra == "dev"
+Requires-Dist: vietnamadminunits==1.0.4; extra == "dev"
+Dynamic: license-file
+
+# vn-address-normalizer
+
+[Tiếng Việt](README.vi.md)
+
+On 1 July 2025 Vietnam went from 63 provinces to 34 and dropped the district level entirely. Every address in every customer database, order history and shipping system is now written in a format that no longer exists. On top of that, people never typed addresses cleanly to begin with: `12 ng trai p.ben thanh q1 tphcm`.
+
+This project takes an address the way people actually type it, figures out which ward, district and province it refers to, and returns the address in the new two-level system.
+
+```
+$ python -m vnaddr "Số 1 Đại Cồ Việt p bach khoa q hai ba trung hn"
+
+old: Phường Bách Khoa, Quận Hai Bà Trưng, Thành phố Hà Nội
+new: Số 1 Đại Cồ Việt, Phường Bạch Mai, Thành phố Hà Nội
+```
+
+![Web demo](docs/demo.png)
+
+It works on old-format addresses (ward, district, province) and on addresses already written in the new format, and it tells you which one it saw. When an old ward was split between several new wards, it returns the official default and lists the alternatives instead of pretending to know.
+
+## Results
+
+The number I care about is ward accuracy: did we land on the right new ward and province?
+
+| | Synthetic test | Synthetic, hard | Real-style test |
+|---|---|---|---|
+| [vietnamadminunits](https://github.com/tranngocminhhieu/vietnamadminunits) (rule-based library) | 89.3% | 75.2% | 86.6% |
+| Rule-based segmenter + my resolver | 75.6% | 73.1% | 84.8% |
+| **Fine-tuned XLM-R + my resolver** | **98.7%** | **98.0%** | **99.6%** (223/224) |
+
+- **Synthetic test** (5,000 addresses) comes from my generator with an unseen seed. **Synthetic, hard** (3,000) has typos in 35% of addresses and no accents in 70%.
+- **Real-style test** has 224 addresses of real places (homes, shops, schools, UBND offices) written the way people fill in delivery forms. I made it after every design decision was final and ran it once.
+- **Baseline setup:** `vietnamadminunits` ran offline like my system, and I told it whether each address was in the old or new format, since it can't detect that on its own. That setup favors it.
+- **Speed:** about 50 ms per address on my laptop's Intel CPU, against about 2 ms for the rule-based library.
+
+How I built the real-style sets, and their limits, is described in [data/eval/README.md](data/eval/README.md). In short, an LLM wrote them and I checked every label against the official list of units. They are not production data, so I'd expect lower numbers on a real customer database.
+
+## How it works
+
+The pipeline has two parts.
+
+**1. Split the address into parts.** An `xlm-roberta-base` model (278M parameters) fine-tuned for token classification labels each word as street detail, ward, district or province. Doing this with rules breaks quickly: commas are optional, `P.` can mean ward or be part of a name, and many addresses start with something like "BV đa khoa tỉnh Bình Dương", which contains a province name that isn't the address's province. Even with perfect splitting, the rest of the pipeline gets 98.8% on the synthetic test set, while the rule-based splitter only gets 75.6%. So this step is where the errors come from.
+
+**2. Resolve and convert.** Each part is matched against 10,040 pre-2025 units and 3,321 post-2025 units. The matching handles:
+- abbreviations and type prefixes (`P.`, `F.`, `Q1`, `TX.`, `TT.`)
+- typos and missing accents
+- names that start like a prefix ("Phương Mai" is not "Phường Mai")
+- informal province names (`SG`, `HN`, `BRVT`, and `ĐN`, which can mean two different provinces)
+- names from earlier mergers (2019 to early 2025)
+
+Old-format and new-format readings are scored together. If the province looks wrong, the search widens to the whole country. If no ward is labeled, it looks inside institution names ("UBND xã Kim Chung, Đông Anh, HN"). The match is then converted with the official old-to-new mapping, which covers every old unit.
+
+The unit lists and the mapping come from the MIT-licensed [vietnamadminunits](https://github.com/tranngocminhhieu/vietnamadminunits) package (`scripts/build_gazetteer.py` turns them into `data/gazetteer.json`).
+
+### Training data
+
+There is no public labeled dataset of messy Vietnamese addresses, so I wrote a generator (`src/vnaddr/synth.py`) and trained on 200k generated addresses. The noise it adds:
+- removed accents, random casing, and a dozen ways to write each unit type
+- missing or odd separators, typos
+- ngõ/ngách/hẻm/kiệt, thôn/ấp/tổ, buildings
+- shop and institution names in front of the address
+
+Training ran on a free Kaggle T4 and took about 25 minutes per model (`kaggle/train_tagger.py`).
+
+## What went wrong along the way
+
+The first model scored 98% on synthetic data and about 80% on real-style addresses. Real addresses often start with a place name ("Chợ Bến Thành, …", "BV đa khoa tỉnh Vĩnh Phúc, …"), and my generator never produced one, so the model tagged hospital names as provinces. Adding place names to the generator fixed most of that.
+
+Next, I tested on a fresh set of real-style addresses and got 88.9%, slightly *below* the rule-based library (89.8%). I had tuned the resolver on my development set until it looked perfect, and it didn't carry over. Most of the remaining errors had one shape: "UBND xã X, huyện Y" or "Công an phường X, quận Y", where the ward only appears inside an institution name. I fixed that in both the resolver and the generator. Since I had now looked at that test set's errors, I turned it into a second development set and wrote a third one for the final number.
+
+The effect of each training-data change, measured with the same resolver on the final test set:
+
+| Model | Training data | Real-style test |
+|---|---|---|
+| XLM-R v1 | addresses only | 83.9% |
+| XLM-R v2 | + place names in front, province initials | 98.7% |
+| XLM-R v3 | + wards mentioned inside institution names | 99.6% |
+| DistilBERT-multilingual v3 (135M) | same as v3 | 99.6% |
+
+DistilBERT is about twice as fast and almost as good on the synthetic sets (98.6% / 97.9%), so it's a reasonable choice if latency matters.
+
+All numbers, including the development sets, are in `reports/results.json`. The remaining errors are in `reports/errors/`.
+
+## Running it
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+You need a trained tagger in `models/tagger/`; see [models/README.md](models/README.md). Without one, everything still runs, using the much weaker rule-based splitter.
+
+```bash
+# one address
+PYTHONPATH=src .venv/bin/python -m vnaddr "UBND xa Kim Chung, Dong Anh, HN"
+
+# a CSV file: adds vnaddr_* columns next to yours
+PYTHONPATH=src .venv/bin/python -m vnaddr --csv customers.csv --column address --out customers_2025.csv
+
+# HTTP API + the web demo at http://localhost:8000
+PYTHONPATH=src .venv/bin/uvicorn vnaddr.api:app --port 8000
+curl -s localhost:8000/normalize -H 'Content-Type: application/json' -d '{"address": "Q.BT, P.25, SG"}'
+
+# Docker (copies models/ into the image)
+docker build -t vnaddr . && docker run -p 8000:8000 vnaddr
+```
+
+The response has:
+- `new`: province, ward and the full new address
+- `old`: the old units, when the input was in the old format
+- `fmt`: which format was detected
+- `split_ward` and `alternatives`: set when the old ward was divided
+- `confidence`: a score from 0 to 1. In a bulk migration, I'd send everything below about 0.7 to manual review.
+
+### Reproducing the results
+
+```bash
+.venv/bin/python scripts/gen_data.py          # synthetic splits into data/synth/
+# train on Kaggle: see kaggle/README.md
+.venv/bin/python scripts/evaluate.py --out reports/results.json
+.venv/bin/python scripts/make_report.py
+.venv/bin/python -m pytest -q
+```
+
+## Limitations
+
+- **Split wards:** 471 old wards were divided between several new ones. Picking the right one needs the house's location, so without a geocoder you get the official default plus the list.
+- **Roman numerals:** "P.5" is not yet matched to wards officially named "Phường V". This is the single error on the final test set.
+- **Very old names:** names older than the merger history in the unit lists won't resolve.
+- **Int8 quantization:** it made the model about 1.7× faster on CPU but cost several points of accuracy, so it's off by default.
+
+## Layout
+
+```
+src/vnaddr/     text, gazetteer, synth (data generator), tagger, resolver, pipeline, api, CLI
+scripts/        build_gazetteer, gen_data, evaluate, make_report, build_real_eval
+kaggle/         GPU training job + metadata templates
+data/           gazetteer.json, eval/ (real-style test sets)
+reports/        results, per-set errors, training metrics
+web/ docs/ tests/
+```
+
+## License
+
+MIT. The administrative unit data comes from [vietnamadminunits](https://github.com/tranngocminhhieu/vietnamadminunits) (MIT).

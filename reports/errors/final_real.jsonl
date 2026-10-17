@@ -1,0 +1,1 @@
+{"text": "12 Trần Hưng Đạo, P.5, TP Vị Thanh, Hậu Giang", "gold": ["thanhphocantho", ["phuongvitan"], {"pk": "tinhhaugiang", "dk": "thanhphovithanh", "wk": "phuongv"}], "pred": ["tinhcamau", "phuongtanthanh", {"province": "Tỉnh Cà Mau", "district": "Thành phố Cà Mau", "ward": "Phường 5", "province_key": "tinhcamau", "district_key": "thanhphocamau", "ward_key": "phuong5"}]}

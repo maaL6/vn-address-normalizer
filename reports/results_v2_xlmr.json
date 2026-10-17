@@ -1,0 +1,12 @@
+{
+  "final_real/model": {
+    "province": 99.55,
+    "ward_in_candidates": 98.66,
+    "ward_default": 98.66,
+    "ward[old]": 98.66,
+    "ward[split]": 100.0,
+    "ward[historic_name]": 100.0,
+    "n": 224,
+    "ms_per_addr": 59.04
+  }
+}

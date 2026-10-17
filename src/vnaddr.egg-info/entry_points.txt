@@ -1,0 +1,2 @@
+[console_scripts]
+vnaddr = vnaddr.__main__:main

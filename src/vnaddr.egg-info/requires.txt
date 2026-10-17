@@ -1,0 +1,14 @@
+rapidfuzz>=3
+fastapi>=0.110
+uvicorn[standard]
+pydantic>=2
+
+[dev]
+pytest
+httpx
+vietnamadminunits==1.0.4
+
+[model]
+torch>=2.2
+transformers<5,>=4.40
+numpy<2

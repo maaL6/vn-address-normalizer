@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vnaddr"
+version = "1.0.0"
+description = "Normalize Vietnamese addresses and convert them to the 2025 administrative system"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = ["rapidfuzz>=3", "fastapi>=0.110", "uvicorn[standard]", "pydantic>=2"]
+
+[project.optional-dependencies]
+model = ["torch>=2.2", "transformers>=4.40,<5", "numpy<2"]
+dev = ["pytest", "httpx", "vietnamadminunits==1.0.4"]
+
+[project.scripts]
+vnaddr = "vnaddr.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

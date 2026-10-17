@@ -1,0 +1,32 @@
+{
+  "test/model": {
+    "province": 99.34,
+    "ward_in_candidates": 98.56,
+    "ward_default": 98.56,
+    "ward[new]": 99.2,
+    "ward[old]": 98.12,
+    "ward[split]": 97.76,
+    "n": 5000,
+    "ms_per_addr": 41.29
+  },
+  "test_hard/model": {
+    "province": 99.03,
+    "ward_in_candidates": 97.91,
+    "ward_default": 97.91,
+    "ward[new]": 98.19,
+    "ward[old]": 97.72,
+    "ward[split]": 96.61,
+    "n": 3000,
+    "ms_per_addr": 46.8
+  },
+  "final_real/model": {
+    "province": 99.55,
+    "ward_in_candidates": 99.55,
+    "ward_default": 99.55,
+    "ward[old]": 99.55,
+    "ward[split]": 100.0,
+    "ward[historic_name]": 100.0,
+    "n": 224,
+    "ms_per_addr": 29.89
+  }
+}

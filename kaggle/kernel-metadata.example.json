@@ -1,0 +1,14 @@
+{
+  "id": "<your-kaggle-username>/vn-address-tagger-train",
+  "title": "vn-address-tagger-train",
+  "code_file": "train_tagger.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": ["<your-kaggle-username>/vn-address-synth"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "machine_shape": "NvidiaTeslaT4"
+}

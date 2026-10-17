@@ -1,0 +1,172 @@
+{
+  "test/baseline": {
+    "province": 97.08,
+    "ward_in_candidates": 89.34,
+    "ward_default": 89.34,
+    "ward[new]": 91.27,
+    "ward[old]": 88.0,
+    "ward[split]": 85.9,
+    "n": 5000,
+    "ms_per_addr": 1.28
+  },
+  "test/rules": {
+    "province": 87.8,
+    "ward_in_candidates": 75.63,
+    "ward_default": 75.63,
+    "ward[new]": 79.17,
+    "ward[old]": 73.18,
+    "ward[split]": 77.24,
+    "n": 5000,
+    "ms_per_addr": 26.75
+  },
+  "test/oracle": {
+    "province": 99.56,
+    "ward_in_candidates": 98.83,
+    "ward_default": 98.83,
+    "ward[new]": 99.35,
+    "ward[old]": 98.47,
+    "ward[split]": 98.4,
+    "n": 5000,
+    "ms_per_addr": 9.65
+  },
+  "test/model": {
+    "province": 99.44,
+    "ward_in_candidates": 98.69,
+    "ward_default": 98.69,
+    "ward[new]": 99.2,
+    "ward[old]": 98.33,
+    "ward[split]": 98.4,
+    "n": 5000,
+    "ms_per_addr": 80.6
+  },
+  "test_hard/baseline": {
+    "province": 93.9,
+    "ward_in_candidates": 75.15,
+    "ward_default": 75.15,
+    "ward[new]": 76.59,
+    "ward[old]": 74.12,
+    "ward[split]": 76.84,
+    "n": 3000,
+    "ms_per_addr": 1.26
+  },
+  "test_hard/rules": {
+    "province": 86.8,
+    "ward_in_candidates": 73.09,
+    "ward_default": 73.03,
+    "ward[new]": 75.27,
+    "ward[old]": 71.55,
+    "ward[split]": 77.4,
+    "n": 3000,
+    "ms_per_addr": 30.29
+  },
+  "test_hard/oracle": {
+    "province": 99.33,
+    "ward_in_candidates": 98.39,
+    "ward_default": 98.39,
+    "ward[new]": 98.6,
+    "ward[old]": 98.25,
+    "ward[split]": 97.18,
+    "n": 3000,
+    "ms_per_addr": 14.09
+  },
+  "test_hard/model": {
+    "province": 99.07,
+    "ward_in_candidates": 97.98,
+    "ward_default": 97.98,
+    "ward[new]": 98.1,
+    "ward[old]": 97.9,
+    "ward[split]": 96.05,
+    "n": 3000,
+    "ms_per_addr": 80.35
+  },
+  "dev_real/baseline": {
+    "province": 96.99,
+    "ward_in_candidates": 92.11,
+    "ward_default": 92.11,
+    "ward[old]": 92.11,
+    "ward[split]": 94.87,
+    "ward[historic_name]": 93.75,
+    "n": 266,
+    "ms_per_addr": 1.56
+  },
+  "dev_real/rules": {
+    "province": 87.97,
+    "ward_in_candidates": 83.83,
+    "ward_default": 83.83,
+    "ward[old]": 83.83,
+    "ward[split]": 84.62,
+    "ward[historic_name]": 81.25,
+    "n": 266,
+    "ms_per_addr": 19.63
+  },
+  "dev_real/model": {
+    "province": 98.87,
+    "ward_in_candidates": 98.12,
+    "ward_default": 98.12,
+    "ward[old]": 98.12,
+    "ward[split]": 100.0,
+    "ward[historic_name]": 93.75,
+    "n": 266,
+    "ms_per_addr": 79.93
+  },
+  "dev2_real/baseline": {
+    "province": 98.67,
+    "ward_in_candidates": 89.78,
+    "ward_default": 89.78,
+    "ward[old]": 89.78,
+    "ward[split]": 93.75,
+    "ward[historic_name]": 88.24,
+    "n": 225,
+    "ms_per_addr": 2.86
+  },
+  "dev2_real/rules": {
+    "province": 88.0,
+    "ward_in_candidates": 82.22,
+    "ward_default": 82.22,
+    "ward[old]": 82.22,
+    "ward[split]": 90.62,
+    "ward[historic_name]": 70.59,
+    "n": 225,
+    "ms_per_addr": 34.18
+  },
+  "dev2_real/model": {
+    "province": 99.56,
+    "ward_in_candidates": 97.78,
+    "ward_default": 97.33,
+    "ward[old]": 97.78,
+    "ward[split]": 96.88,
+    "ward[historic_name]": 88.24,
+    "n": 225,
+    "ms_per_addr": 53.41
+  },
+  "final_real/baseline": {
+    "province": 97.77,
+    "ward_in_candidates": 86.61,
+    "ward_default": 86.61,
+    "ward[old]": 86.61,
+    "ward[split]": 92.59,
+    "ward[historic_name]": 100.0,
+    "n": 224,
+    "ms_per_addr": 2.13
+  },
+  "final_real/rules": {
+    "province": 87.5,
+    "ward_in_candidates": 84.82,
+    "ward_default": 84.38,
+    "ward[old]": 84.82,
+    "ward[split]": 88.89,
+    "ward[historic_name]": 100.0,
+    "n": 224,
+    "ms_per_addr": 44.23
+  },
+  "final_real/model": {
+    "province": 99.55,
+    "ward_in_candidates": 99.55,
+    "ward_default": 99.55,
+    "ward[old]": 99.55,
+    "ward[split]": 100.0,
+    "ward[historic_name]": 100.0,
+    "n": 224,
+    "ms_per_addr": 54.41
+  }
+}

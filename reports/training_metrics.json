@@ -1,0 +1,116 @@
+{
+  "v1/distilmbert": {
+    "base_model": "distilbert/distilbert-base-multilingual-cased",
+    "params": 134741001,
+    "epochs": 2,
+    "lr": 6e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 11.1,
+    "tag_sequence_accuracy": {
+      "val": 0.9646,
+      "test": 0.969,
+      "test_hard": 0.967
+    },
+    "tag_token_accuracy": {
+      "val": 0.9969,
+      "test": 0.9971,
+      "test_hard": 0.9968
+    }
+  },
+  "v1/xlmr-base": {
+    "base_model": "FacebookAI/xlm-roberta-base",
+    "params": 277459977,
+    "epochs": 2,
+    "lr": 5e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 23.6,
+    "tag_sequence_accuracy": {
+      "val": 0.9666,
+      "test": 0.9694,
+      "test_hard": 0.9703
+    },
+    "tag_token_accuracy": {
+      "val": 0.9972,
+      "test": 0.9972,
+      "test_hard": 0.9974
+    }
+  },
+  "v2/distilmbert": {
+    "base_model": "distilbert/distilbert-base-multilingual-cased",
+    "params": 134741001,
+    "epochs": 2,
+    "lr": 6e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 11.9,
+    "tag_sequence_accuracy": {
+      "val": 0.9534,
+      "test": 0.9536,
+      "test_hard": 0.9497
+    },
+    "tag_token_accuracy": {
+      "val": 0.9964,
+      "test": 0.996,
+      "test_hard": 0.9957
+    }
+  },
+  "v2/xlmr-base": {
+    "base_model": "FacebookAI/xlm-roberta-base",
+    "params": 277459977,
+    "epochs": 2,
+    "lr": 5e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 25.4,
+    "tag_sequence_accuracy": {
+      "val": 0.9604,
+      "test": 0.9556,
+      "test_hard": 0.9537
+    },
+    "tag_token_accuracy": {
+      "val": 0.9971,
+      "test": 0.9965,
+      "test_hard": 0.9964
+    }
+  },
+  "v3/distilmbert": {
+    "base_model": "distilbert/distilbert-base-multilingual-cased",
+    "params": 134741001,
+    "epochs": 2,
+    "lr": 6e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 12.2,
+    "tag_sequence_accuracy": {
+      "val": 0.9532,
+      "test": 0.9566,
+      "test_hard": 0.949
+    },
+    "tag_token_accuracy": {
+      "val": 0.996,
+      "test": 0.9963,
+      "test_hard": 0.9957
+    }
+  },
+  "v3/xlmr-base": {
+    "base_model": "FacebookAI/xlm-roberta-base",
+    "params": 277459977,
+    "epochs": 2,
+    "lr": 5e-05,
+    "batch_size": 64,
+    "n_train": 200000,
+    "train_minutes_t4": 26.2,
+    "tag_sequence_accuracy": {
+      "val": 0.958,
+      "test": 0.9596,
+      "test_hard": 0.9533
+    },
+    "tag_token_accuracy": {
+      "val": 0.9968,
+      "test": 0.9969,
+      "test_hard": 0.9961
+    }
+  }
+}
